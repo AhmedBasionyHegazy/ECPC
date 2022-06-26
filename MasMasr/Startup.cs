@@ -20,6 +20,9 @@ using System.Text;
 using Microsoft.Net.Http.Headers;
 using MasMasr.Models;
 
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+
 namespace MasMasr
 {
     public class Startup
@@ -117,8 +120,16 @@ namespace MasMasr
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "MasMasr v1"));
             }
-            app.UseStaticFiles();
+
             app.UseHttpsRedirection();
+
+            app.UseFileServer(new FileServerOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Directory.GetCurrentDirectory() + "\\Upload"),
+                RequestPath = "/Upload",
+                EnableDirectoryBrowsing = true
+            });
 
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
 
